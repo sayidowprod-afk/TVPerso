@@ -48,7 +48,12 @@ fun TvPersoTheme(content: @Composable () -> Unit) {
 @Composable
 fun HomeScreen() {
     val context = LocalContext.current
-    val apps = remember { queryTvApps(context.packageManager) }
+    val apps = remember {
+        val tvApps = queryTvApps(context.packageManager)
+        // Pas d'app TV trouvée (cas courant en test sur téléphone) : on retombe sur
+        // la liste complète des apps pour quand même pouvoir vérifier le rendu.
+        tvApps.ifEmpty { queryAllLauncherApps(context.packageManager) }
+    }
 
     Box(
         modifier = Modifier
